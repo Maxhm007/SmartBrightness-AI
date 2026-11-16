@@ -1,5 +1,11 @@
 # Changelog
 
+v0.2.0 - 16-Nov-2026 - 09:33 AM - Internal display control and local preferences
+
+- Added supported internal-display detection and manual brightness setting through the Windows WMI provider.
+- Added validated local settings persistence and numeric-only activity history under LocalAppData.
+- Rebuilt the WPF app with zero warnings and errors; all five core tests pass. Physical display behavior remains unverified.
+
 v0.1.1 - 16-Nov-2026 - 09:30 AM - Brightness engine hysteresis and verification
 
 - Corrected hysteresis to ignore small sensor fluctuations while allowing smoothed transitions to converge.

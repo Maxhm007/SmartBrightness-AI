@@ -9,7 +9,8 @@ SmartBrightness AI is intended to be a lightweight, local-first Windows 10/11 x6
 - `src/SmartBrightness.Core` contains platform-independent sensor fusion and brightness policy.
 - `src/SmartBrightness.App` is the Windows-only WPF shell.
 - `tests/SmartBrightness.Core.Tests` contains deterministic engine tests.
-- Sensor acquisition and display-control adapters will be isolated behind interfaces so unsupported devices can fail safely.
+- The app detects and sets supported internal-display brightness through Windows WMI and stores validated preferences plus numeric-only activity under local app data.
+- Sensor acquisition and other display-control adapters remain pending; the app fails closed for automatic mode.
 
 The GitHub repository was confirmed empty before initialization. This is an initial foundation, not a completed hardware-integrated release.
 
@@ -24,4 +25,5 @@ Requires the .NET 8 SDK and Windows. Run `dotnet build SmartBrightness.sln` and 
 - A .NET 8 SDK was installed locally under the ignored `.dotnet` folder for verification.
 - `dotnet build src/SmartBrightness.App/SmartBrightness.App.csproj` succeeded with zero warnings and errors.
 - `dotnet test SmartBrightness.sln` passed all 5 core tests.
+- The WMI provider and local data behavior compile, but actual display hardware operation has not been exercised.
 - WPF interactive execution, Windows hardware behavior, webcam access, display control, and packaging are currently unverified.

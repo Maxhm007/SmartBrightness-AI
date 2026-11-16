@@ -23,6 +23,7 @@ public sealed class BrightnessEngine
 {
     private readonly BrightnessSettings _settings;
     private double? _smoothed;
+    private double? _lastRaw;
 
     public BrightnessEngine(BrightnessSettings? settings = null)
     {
@@ -37,6 +38,7 @@ public sealed class BrightnessEngine
         {
             var pinned = Clamp(manual);
             _smoothed = pinned;
+            _lastRaw = null;
             return new(pinned, true, "Manual override");
         }
 
@@ -50,10 +52,16 @@ public sealed class BrightnessEngine
         var raw = totalWeight <= 0
             ? Clamp(_settings.Fallback)
             : Clamp(weighted.Where(x => x.Value.HasValue).Sum(x => Normalize(x.Value!.Value) * x.Weight) / totalWeight);
-        var next = _smoothed is null ? raw : _smoothed.Value + _settings.Smoothing * (raw - _smoothed.Value);
-        var changed = _smoothed is null || Math.Abs(next - _smoothed.Value) >= _settings.Hysteresis;
-        if (changed) _smoothed = next;
-        return new(_smoothed ?? next, changed, totalWeight <= 0 ? "Sensor fallback" : "Sensor fusion");
+        if (_lastRaw is { } previousRaw && Math.Abs(raw - previousRaw) < _settings.Hysteresis)
+            raw = previousRaw;
+        else
+            _lastRaw = raw;
+
+        var previousTarget = _smoothed;
+        var next = previousTarget is null ? raw : previousTarget.Value + _settings.Smoothing * (raw - previousTarget.Value);
+        var changed = previousTarget is null || Math.Abs(next - previousTarget.Value) > 0.001;
+        _smoothed = next;
+        return new(next, changed, totalWeight <= 0 ? "Sensor fallback" : "Sensor fusion");
     }
 
     private double Normalize(double value) => Clamp(value);

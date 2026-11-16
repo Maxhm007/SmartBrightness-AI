@@ -1,4 +1,5 @@
 using SmartBrightness.Core;
+using Xunit;
 
 namespace SmartBrightness.Core.Tests;
 
@@ -30,7 +31,7 @@ public class BrightnessEngineTests
     }
 
     [Fact]
-    public void SmoothsLargeChangesAndSuppressesSmallChanges()
+    public void SmoothsLargeChangesAndSuppressesSmallSensorFluctuations()
     {
         var engine = new BrightnessEngine(new BrightnessSettings(Smoothing: .25, Hysteresis: 1.5));
         Assert.Equal(20, engine.Update(Snapshot(ambient: 20)).Target);
@@ -38,8 +39,15 @@ public class BrightnessEngineTests
         Assert.Equal(35, large.Target);
         Assert.True(large.Changed);
         var small = engine.Update(Snapshot(ambient: 81));
-        Assert.False(small.Changed);
-        Assert.Equal(35, small.Target);
+        Assert.True(small.Changed);
+        Assert.Equal(46.25, small.Target);
+
+        var hysteresisEngine = new BrightnessEngine(new BrightnessSettings(Smoothing: 1, Hysteresis: 1.5));
+        hysteresisEngine.Update(Snapshot(ambient: 20));
+        Assert.Equal(80, hysteresisEngine.Update(Snapshot(ambient: 80)).Target);
+        var fluctuation = hysteresisEngine.Update(Snapshot(ambient: 81));
+        Assert.False(fluctuation.Changed);
+        Assert.Equal(80, fluctuation.Target);
     }
 
     [Fact]

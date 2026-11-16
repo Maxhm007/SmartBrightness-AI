@@ -21,5 +21,7 @@ Requires the .NET 8 SDK and Windows. Run `dotnet build SmartBrightness.sln` and 
 
 - Workspace inspected on 16-Nov-2026.
 - Repository source and initial architecture added on 16-Nov-2026.
-- The environment has .NET 8 runtime and Windows Desktop runtime, but no .NET SDK.
-- Build, tests, WPF execution, Windows hardware behavior, webcam access, display control, and packaging are currently unverified.
+- A .NET 8 SDK was installed locally under the ignored `.dotnet` folder for verification.
+- `dotnet build src/SmartBrightness.App/SmartBrightness.App.csproj` succeeded with zero warnings and errors.
+- `dotnet test SmartBrightness.sln` passed all 5 core tests.
+- WPF interactive execution, Windows hardware behavior, webcam access, display control, and packaging are currently unverified.

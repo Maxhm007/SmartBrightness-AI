@@ -1,0 +1,34 @@
+<Window x:Class="SmartBrightness.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="SmartBrightness AI" Height="720" Width="1024" MinHeight="600" MinWidth="820"
+        Background="{StaticResource WindowBackground}" WindowStartupLocation="CenterScreen">
+    <Grid Margin="32">
+        <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+        <DockPanel Grid.Row="0" Margin="0,0,0,28">
+            <StackPanel><TextBlock Text="SMARTBRIGHTNESS" FontSize="13" Foreground="{StaticResource Accent}" FontWeight="Bold"/><TextBlock Text="Good afternoon" FontSize="30" FontWeight="SemiBold" Margin="0,5,0,0"/></StackPanel>
+            <ToggleButton x:Name="AutoMode" Content="Automatic mode" IsChecked="False" Click="AutoMode_Click" DockPanel.Dock="Right" VerticalAlignment="Center" Padding="18,11" />
+        </DockPanel>
+        <Border Grid.Row="1" Background="{StaticResource CardBackground}" CornerRadius="20" Padding="28" Margin="0,0,0,20">
+            <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                <StackPanel VerticalAlignment="Center"><TextBlock Text="DISPLAY BRIGHTNESS" FontSize="12" Foreground="#93A4B8" FontWeight="SemiBold"/><TextBlock x:Name="BrightnessValue" Text="50%" FontSize="66" FontWeight="Light" Margin="0,3,0,0"/><TextBlock x:Name="StatusText" Text="Automatic adjustment is off" Foreground="#A7B4C5" FontSize="14"/></StackPanel>
+                <Border Grid.Column="1" Width="116" Height="116" CornerRadius="58" BorderBrush="{StaticResource Accent}" BorderThickness="3" VerticalAlignment="Center"><TextBlock Text="☼" FontSize="50" Foreground="{StaticResource Accent}" HorizontalAlignment="Center" VerticalAlignment="Center"/></Border>
+            </Grid>
+        </Border>
+        <Grid Grid.Row="2"><Grid.ColumnDefinitions><ColumnDefinition Width="1.25*"/><ColumnDefinition Width="20"/><ColumnDefinition Width="1*"/></Grid.ColumnDefinitions>
+            <Border Background="{StaticResource CardBackground}" CornerRadius="18" Padding="24"><StackPanel>
+                <TextBlock Text="Manual control" FontSize="18" FontWeight="SemiBold"/><TextBlock Text="Set a comfortable level for this display." Foreground="#A7B4C5" Margin="0,7,0,20" TextWrapping="Wrap"/>
+                <Slider x:Name="BrightnessSlider" Minimum="10" Maximum="100" Value="50" TickFrequency="1" IsSnapToTickEnabled="False" ValueChanged="BrightnessSlider_ValueChanged"/>
+                <DockPanel Margin="0,6,0,18"><TextBlock Text="10%" Foreground="#93A4B8"/><TextBlock Text="100%" Foreground="#93A4B8" DockPanel.Dock="Right"/></DockPanel>
+                <Button Content="Apply brightness" HorizontalAlignment="Left" Click="Apply_Click"/>
+            </StackPanel></Border>
+            <Border Grid.Column="2" Background="{StaticResource CardBackground}" CornerRadius="18" Padding="24"><StackPanel>
+                <TextBlock Text="Light signals" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,18"/>
+                <TextBlock Text="ROOM LIGHT" FontSize="11" Foreground="#93A4B8" FontWeight="Bold"/><TextBlock Text="Camera sensor not connected" Foreground="#A7B4C5" Margin="0,4,0,18"/>
+                <TextBlock Text="SCREEN CONTENT" FontSize="11" Foreground="#93A4B8" FontWeight="Bold"/><TextBlock Text="Screen analysis not connected" Foreground="#A7B4C5" Margin="0,4,0,18"/>
+                <TextBlock Text="Privacy first" FontSize="14" FontWeight="SemiBold"/><TextBlock Text="Sensor readings will be processed locally. Captured frames will not be saved." Foreground="#A7B4C5" TextWrapping="Wrap" Margin="0,5,0,0"/>
+            </StackPanel></Border>
+        </Grid>
+        <TextBlock Grid.Row="3" Text="Hardware control is not available until a compatible display is detected." Foreground="#93A4B8" FontSize="12" Margin="2,18,0,0"/>
+    </Grid>
+</Window>

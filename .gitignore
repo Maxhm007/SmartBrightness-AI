@@ -3,6 +3,7 @@
 .vs/
 .idea/
 .dotnet/
+.tools/
 *.user
 *.suo
 TestResults/

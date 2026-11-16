@@ -6,4 +6,5 @@
 - Connect live sensor adapters and the unified engine to the WPF dashboard.
 - Add manual override expiry, themes, tray behavior, and startup integration.
 - Validate the WPF application and hardware behavior on Windows hardware.
-- Add portable and installer packaging, installation guidance, and release validation.
+- Create a portable zip package and verify installer install/uninstall on a separate Windows machine.
+- Configure code signing before public distribution if a trusted publisher identity is available.

@@ -1,5 +1,11 @@
 # Changelog
 
+v0.2.1 - 16-Nov-2026 - 10:42 AM - Windows x64 installation package
+
+- Added a repeatable self-contained x64 publish and Inno Setup installer workflow.
+- Built `SmartBrightnessAI-Setup-0.2.0.exe` and verified temporary install/uninstall; no administrator rights were required in the check.
+- Installer remains unsigned; SmartScreen behavior and installation on a second machine are unverified.
+
 v0.2.0 - 16-Nov-2026 - 09:33 AM - Internal display control and local preferences
 
 - Added supported internal-display detection and manual brightness setting through the Windows WMI provider.

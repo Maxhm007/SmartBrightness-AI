@@ -3,8 +3,8 @@ using System.IO;
 
 namespace SmartBrightness.App;
 
-public sealed record UserSettings(double Brightness = 50, double Minimum = 10, double Maximum = 100, bool AutomaticEnabled = false);
-public sealed record NumericActivityEntry(DateTimeOffset Timestamp, double Brightness);
+public sealed record UserSettings(double Brightness = 50, double Minimum = 10, double Maximum = 100, double WindowOpacity = 0.92, bool AutomaticEnabled = false, int CameraIndex = 0);
+public sealed record NumericActivityEntry(DateTimeOffset Timestamp, double Brightness, double? AmbientLight = null, double? ScreenLuminance = null);
 
 public sealed class LocalSettingsStore
 {
@@ -17,20 +17,24 @@ public sealed class LocalSettingsStore
         var minimum = double.IsFinite(settings.Minimum) ? Math.Clamp(settings.Minimum, 0, 99) : 10;
         var maximum = double.IsFinite(settings.Maximum) ? Math.Clamp(settings.Maximum, minimum + 1, 100) : 100;
         var brightness = double.IsFinite(settings.Brightness) ? Math.Clamp(settings.Brightness, minimum, maximum) : 50;
-        return new UserSettings(brightness, minimum, maximum, false);
+        var opacity = double.IsFinite(settings.WindowOpacity) ? Math.Clamp(settings.WindowOpacity, 0.6, 1) : 0.92;
+        var cameraIndex = Math.Clamp(settings.CameraIndex, 0, 7);
+        return new UserSettings(brightness, minimum, maximum, opacity, false, cameraIndex);
     }
 
     public Task SaveSettingsAsync(UserSettings settings, CancellationToken cancellationToken = default) =>
         SaveAsync("settings.json", settings with { AutomaticEnabled = false }, cancellationToken);
 
-    public async Task AppendActivityAsync(double brightness, CancellationToken cancellationToken = default)
+    public async Task AppendActivityAsync(double brightness, double? ambientLight = null, double? screenLuminance = null, CancellationToken cancellationToken = default)
     {
         if (!double.IsFinite(brightness)) return;
         var history = await LoadAsync<List<NumericActivityEntry>>("history.json", cancellationToken).ConfigureAwait(false) ?? [];
-        history.Add(new NumericActivityEntry(DateTimeOffset.Now, Math.Clamp(brightness, 0, 100)));
+        history.Add(new NumericActivityEntry(DateTimeOffset.Now, Math.Clamp(brightness, 0, 100), FiniteOrNull(ambientLight), FiniteOrNull(screenLuminance)));
         if (history.Count > 500) history.RemoveRange(0, history.Count - 500);
         await SaveAsync("history.json", history, cancellationToken).ConfigureAwait(false);
     }
+
+    private static double? FiniteOrNull(double? value) => value is { } number && double.IsFinite(number) ? Math.Clamp(number, 0, 100) : null;
 
     private async Task<T?> LoadAsync<T>(string fileName, CancellationToken cancellationToken)
     {

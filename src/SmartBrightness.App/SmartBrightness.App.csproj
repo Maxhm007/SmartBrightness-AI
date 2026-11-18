@@ -1,14 +1,23 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
+    <Version>0.3.0</Version>
+    <OpenCvSharpVersion>4.13.0.20260627</OpenCvSharpVersion>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\SmartBrightness.Core\SmartBrightness.Core.csproj" />
     <PackageReference Include="System.Management" Version="8.0.0" />
+    <PackageReference Include="OpenCvSharp4" Version="$(OpenCvSharpVersion)" ExcludeAssets="analyzers" />
+    <PackageReference Include="OpenCvSharp4.runtime.win" Version="$(OpenCvSharpVersion)" />
   </ItemGroup>
+  <Target Name="RemoveIncompatibleOpenCvAnalyzer" BeforeTargets="CoreCompile">
+    <ItemGroup>
+      <Analyzer Remove="$(NuGetPackageRoot)opencvsharp4\$(OpenCvSharpVersion)\analyzers\dotnet\cs\OpenCvSharp.Analyzers.dll" />
+    </ItemGroup>
+  </Target>
 </Project>

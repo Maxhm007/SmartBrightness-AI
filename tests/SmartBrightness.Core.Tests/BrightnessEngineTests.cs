@@ -55,4 +55,20 @@ public class BrightnessEngineTests
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => new BrightnessEngine(new BrightnessSettings(Minimum: 90, Maximum: 20)));
     }
+
+    [Fact]
+    public void DarkScreenContentDoesNotCollapseBrightnessRecommendation()
+    {
+        Assert.Equal(40, SensorRecommendations.FromScreenLuminance(0));
+        Assert.Equal(50, SensorRecommendations.FromScreenLuminance(50));
+        Assert.Equal(60, SensorRecommendations.FromScreenLuminance(100));
+    }
+
+    [Fact]
+    public void TimePreferenceUsesLowerNightAndHigherDayTargets()
+    {
+        Assert.Equal(35, SensorRecommendations.FromTimeOfDay(new DateTime(2026, 1, 1, 2, 0, 0)));
+        Assert.Equal(75, SensorRecommendations.FromTimeOfDay(new DateTime(2026, 1, 1, 12, 0, 0)));
+        Assert.Equal(40, SensorRecommendations.FromTimeOfDay(new DateTime(2026, 1, 1, 23, 0, 0)));
+    }
 }

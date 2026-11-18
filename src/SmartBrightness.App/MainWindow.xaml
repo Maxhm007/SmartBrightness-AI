@@ -2,12 +2,18 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="SmartBrightness AI" Height="720" Width="1024" MinHeight="600" MinWidth="820"
-        Background="{StaticResource WindowBackground}" WindowStartupLocation="CenterScreen" Loaded="MainWindow_Loaded">
+        Opacity="0.92" Background="{StaticResource WindowBackground}" WindowStartupLocation="CenterScreen"
+        Loaded="MainWindow_Loaded" Closing="MainWindow_Closing" StateChanged="MainWindow_StateChanged">
     <Grid Margin="32">
         <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-        <DockPanel Grid.Row="0" Margin="0,0,0,28">
-            <StackPanel><TextBlock Text="SMARTBRIGHTNESS" FontSize="13" Foreground="{StaticResource Accent}" FontWeight="Bold"/><TextBlock Text="Good afternoon" FontSize="30" FontWeight="SemiBold" Margin="0,5,0,0"/></StackPanel>
-            <ToggleButton x:Name="AutoMode" Content="Automatic mode" IsChecked="False" Click="AutoMode_Click" DockPanel.Dock="Right" VerticalAlignment="Center" Padding="18,11" />
+        <DockPanel Grid.Row="0" Margin="0,0,0,28" LastChildFill="False">
+            <StackPanel><TextBlock Text="SMARTBRIGHTNESS" FontSize="13" Foreground="{StaticResource Accent}" FontWeight="Bold"/><TextBlock Text="Adaptive display" FontSize="30" FontWeight="SemiBold" Margin="0,5,0,0"/></StackPanel>
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="Window transparency" Foreground="#A7B4C5" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                <Slider x:Name="OpacitySlider" Minimum="60" Maximum="100" Value="92" Width="90" VerticalAlignment="Center" ValueChanged="OpacitySlider_ValueChanged"/>
+                <TextBlock x:Name="OpacityValue" Text="92%" Foreground="#A7B4C5" VerticalAlignment="Center" Margin="8,0,16,0"/>
+                <ToggleButton x:Name="AutoMode" Content="Automatic off" IsChecked="False" Click="AutoMode_Click" VerticalAlignment="Center" Padding="18,11" />
+            </StackPanel>
         </DockPanel>
         <Border Grid.Row="1" Background="{StaticResource CardBackground}" CornerRadius="20" Padding="28" Margin="0,0,0,20">
             <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
@@ -24,11 +30,11 @@
             </StackPanel></Border>
             <Border Grid.Column="2" Background="{StaticResource CardBackground}" CornerRadius="18" Padding="24"><StackPanel>
                 <TextBlock Text="Light signals" FontSize="18" FontWeight="SemiBold" Margin="0,0,0,18"/>
-                <TextBlock Text="ROOM LIGHT" FontSize="11" Foreground="#93A4B8" FontWeight="Bold"/><TextBlock Text="Camera sensor not connected" Foreground="#A7B4C5" Margin="0,4,0,18"/>
-                <TextBlock Text="SCREEN CONTENT" FontSize="11" Foreground="#93A4B8" FontWeight="Bold"/><TextBlock Text="Screen analysis not connected" Foreground="#A7B4C5" Margin="0,4,0,18"/>
-                <TextBlock Text="Privacy first" FontSize="14" FontWeight="SemiBold"/><TextBlock Text="Sensor readings will be processed locally. Captured frames will not be saved." Foreground="#A7B4C5" TextWrapping="Wrap" Margin="0,5,0,0"/>
+                <TextBlock Text="ROOM LIGHT · WEBCAM" FontSize="11" Foreground="#93A4B8" FontWeight="Bold"/><TextBlock x:Name="CameraStatus" Text="Camera is off while automatic mode is off" Foreground="#A7B4C5" Margin="0,4,0,18" TextWrapping="Wrap"/>
+                <TextBlock Text="SCREEN CONTENT" FontSize="11" Foreground="#93A4B8" FontWeight="Bold"/><TextBlock x:Name="ScreenStatus" Text="Screen is not sampled while automatic mode is off" Foreground="#A7B4C5" Margin="0,4,0,18" TextWrapping="Wrap"/>
+                <TextBlock Text="Privacy and readability" FontSize="14" FontWeight="SemiBold"/><TextBlock Text="Samples run locally every minute only while auto mode is on. Frames and screen pixels are discarded after measuring. Webcam exposure can change its light estimate; dark screen content only applies a limited dimming influence." Foreground="#A7B4C5" TextWrapping="Wrap" Margin="0,5,0,0"/>
             </StackPanel></Border>
         </Grid>
-        <TextBlock Grid.Row="3" Text="Hardware control is not available until a compatible display is detected." Foreground="#93A4B8" FontSize="12" Margin="2,18,0,0"/>
+        <TextBlock Grid.Row="3" Text="Close hides SmartBrightness AI in the notification area. Choose Exit from its icon to quit." Foreground="#93A4B8" FontSize="12" Margin="2,18,0,0"/>
     </Grid>
 </Window>

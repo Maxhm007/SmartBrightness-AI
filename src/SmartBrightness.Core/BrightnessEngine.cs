@@ -18,6 +18,25 @@ public sealed record BrightnessSettings(
 
 public sealed record BrightnessDecision(double Target, bool Changed, string Reason);
 
+public static class SensorRecommendations
+{
+    /// <summary>Applies a small visibility-preserving bias around neutral instead of copying dark content brightness.</summary>
+    public static double FromScreenLuminance(double luminance)
+    {
+        if (!double.IsFinite(luminance)) throw new ArgumentOutOfRangeException(nameof(luminance));
+        return Math.Clamp(50 + (Math.Clamp(luminance, 0, 100) - 50) * 0.20, 40, 60);
+    }
+
+    public static double FromTimeOfDay(DateTime localTime) => localTime.Hour switch
+    {
+        < 6 => 35,
+        < 9 => 55,
+        < 18 => 75,
+        < 21 => 60,
+        _ => 40
+    };
+}
+
 /// <summary>Combines normalized sensor recommendations into one bounded, smoothed target.</summary>
 public sealed class BrightnessEngine
 {

@@ -1,10 +1,9 @@
 # TODO
 
-- Implement webcam discovery, sampling, calibration, permission handling, and privacy lifecycle.
-- Implement screen luminance sampling across monitors without saving captures.
-- Implement DDC/CI detection and control for supported external monitors.
-- Connect live sensor adapters and the unified engine to the WPF dashboard.
-- Add manual override expiry, themes, tray behavior, and startup integration.
-- Validate the WPF application and hardware behavior on Windows hardware.
-- Create a portable zip package and verify installer install/uninstall on a separate Windows machine.
-- Configure code signing before public distribution if a trusted publisher identity is available.
+- Add a camera selection and calibration page; validate privacy denial, shutter, disconnect, and changing exposure behavior.
+- Add DDC/CI detection and control for supported external displays.
+- Add user-adjustable sampling interval and sensor weights, battery/AC profiles, and manual-override expiration.
+- Add diagnostics/history UI, themes, and Start-with-Windows option.
+- Validate automatic WMI brightness writes, sleep/resume, multi-monitor capture, and protected content across Windows hardware.
+- Build a portable ZIP and verify installer upgrades on a second Windows machine.
+- Configure code signing before broad distribution if a trusted publisher identity is available.

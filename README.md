@@ -1,33 +1,45 @@
 # SmartBrightness AI
 
-A local-first Windows brightness utility under active development. The repository contains a WPF dashboard, a platform-independent sensor-fusion engine, manual WMI brightness control for supported internal displays, and local numeric-only settings/history. Webcam sensing, screen analysis, DDC/CI, automatic adjustment, tray integration, and packaging are not implemented yet.
+A local-first Windows brightness utility. This version includes manual brightness for internal displays exposed by Windows WMI, automatic brightness using webcam, screen-content, and time-of-day inputs, an adjustable transparent window, and close-to-notification-area behavior.
 
-## Requirements
+## Install
 
-- Windows 10 or 11 x64 to run the WPF application.
-- .NET 8 SDK to build and test.
+Run `SmartBrightnessAI-Setup-0.3.0.exe`. It installs per-user under `%LOCALAPPDATA%\Programs\SmartBrightnessAI`, creates a Start menu shortcut, and offers an optional desktop shortcut. It is self-contained, so a separate .NET runtime install is not needed. Uninstall preserves settings and numeric history in `%LOCALAPPDATA%\SmartBrightnessAI`.
 
-## Build and test
+The development installer is unsigned and may trigger a Windows SmartScreen warning. Code signing has not been configured.
+
+## Use
+
+- Adjust **Window transparency** between 60% and 100%.
+- Choose **Automatic on** to enable sensing. It checks for a camera, then samples room light and screen content once per minute. Camera frames and sampled screen pixels are disposed after measurement.
+- Choose **Automatic off** to stop both sensors. Automatic mode remains off after restart until enabled again.
+- Close or minimize the window to keep SmartBrightness AI available from its notification-area icon. Choose **Exit** in the tray menu to stop the process.
+- Manual brightness works only when Windows exposes a compatible internal display through WMI. External monitors are not yet controlled.
+
+If the webcam is unavailable or permission is denied, automatic mode uses the remaining screen and time inputs. Allow desktop apps to access the camera in Windows privacy settings. The camera value is affected by automatic exposure and is only a rough room-light proxy.
+
+## Build and tests
+
+Requires Windows and the .NET 8 SDK.
 
 ```powershell
 dotnet build SmartBrightness.sln
 dotnet test SmartBrightness.sln
 ```
 
-## Build the Windows installer
-
-On Windows, install the .NET 8 SDK and Inno Setup 7, then run:
+To build the Windows x64 installer, install Inno Setup 7 and run:
 
 ```powershell
 .\scripts\build-windows-installer.ps1
 ```
 
-The script publishes a self-contained x64 app and creates `artifacts/windows/installer/SmartBrightnessAI-Setup-0.2.0.exe`. The installer is per-user and does not require administrator privileges. It creates a Start menu shortcut and offers an optional desktop shortcut. Uninstall leaves the user's settings and numeric history under `%LOCALAPPDATA%\SmartBrightnessAI` intact.
+The installer is generated at `artifacts/windows/installer/SmartBrightnessAI-Setup-0.3.0.exe`.
 
-This unsigned development installer may show a Windows SmartScreen warning. Code signing is not configured.
+## Known limitations
 
-## Current limitations
-
-Manual brightness control is available only when Windows exposes a supported internal monitor through WMI. External monitor DDC/CI control is not implemented. Automatic mode remains disabled until sensor sources and their sampling lifecycle are implemented. Core engine inputs are normalized to the 0–100 brightness scale; sensor adapters must map their measurements to that scale and apply product-specific calibration. The initial weights are provisional.
-
-No webcam image, screenshot, or telemetry feature is implemented. Webcam/screen sensing and automatic control are not available. Hardware behavior, installer execution on a second Windows machine, code signing, and SmartScreen behavior have not been verified.
+- WMI control is limited to compatible internal displays; DDC/CI for external monitors is not implemented.
+- Webcam pixel brightness is not calibrated to lux. Automatic exposure can change its reading.
+- Screen pixel luminance is a content estimate, not measured panel output. Its influence is deliberately limited to reduce readability changes on dark content.
+- Sensor weights, time profile, and adjustment interval are initial values and need broader hardware testing.
+- Camera selection/calibration, manual-override expiration, battery profiles, tray startup, start-with-Windows, and portable ZIP packaging remain future work.
+- Actual automatic brightness writes, sleep/resume, and behavior on other Windows devices remain unverified.

@@ -1,5 +1,13 @@
 # Changelog
 
+v0.3.0 - 19-Nov-2026 - 12:37 AM - Transparent tray app and automatic sensors
+
+- Added adjustable window transparency and close/minimize to the notification area with reopen, pause, and exit actions.
+- Added on-demand webcam and per-display screen sampling plus a one-minute auto-brightness loop using the existing WMI adapter.
+- Kept automatic mode off at launch; sensor data stays local and image buffers are discarded after each measurement.
+- Added damped screen-content recommendations and time-of-day input; all seven core tests pass.
+- Built a self-contained x64 installer and verified temporary installation, app startup, and uninstall. Actual automatic brightness writes remain unverified.
+
 v0.2.1 - 16-Nov-2026 - 10:42 AM - Windows x64 installation package
 
 - Added a repeatable self-contained x64 publish and Inno Setup installer workflow.

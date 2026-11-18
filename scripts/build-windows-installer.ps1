@@ -42,6 +42,6 @@ if ($LASTEXITCODE -ne 0) { throw "dotnet publish failed with exit code $LASTEXIT
 & $InnoCompiler $installerScript
 if ($LASTEXITCODE -ne 0) { throw "Inno Setup compiler failed with exit code $LASTEXITCODE" }
 
-$output = Join-Path $repoRoot 'artifacts\windows\installer\SmartBrightnessAI-Setup-0.2.0.exe'
+$output = Join-Path $repoRoot 'artifacts\windows\installer\SmartBrightnessAI-Setup-0.3.0.exe'
 if (-not (Test-Path -LiteralPath $output)) { throw "Installer output was not created: $output" }
 Get-Item -LiteralPath $output | Select-Object FullName, Length, LastWriteTime

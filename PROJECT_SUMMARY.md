@@ -2,30 +2,33 @@
 
 ## Purpose
 
-SmartBrightness AI is intended to be a lightweight, local-first Windows 10/11 x64 brightness controller built with C# and .NET 8 WPF. The planned controller combines webcam light estimates, screen luminance, time-of-day preferences, hardware capability detection, and user controls.
+SmartBrightness AI is a local-first Windows 10/11 x64 brightness controller built with C# and .NET 8 WPF. The current app combines a webcam light estimate, screen pixel-luminance estimate, a simple time-of-day preference, and supported internal-display brightness control.
 
 ## Architecture
 
-- `src/SmartBrightness.Core` contains platform-independent sensor fusion and brightness policy.
-- `src/SmartBrightness.App` is the Windows-only WPF shell.
-- `tests/SmartBrightness.Core.Tests` contains deterministic engine tests.
-- The app detects and sets supported internal-display brightness through Windows WMI and stores validated preferences plus numeric-only activity under local app data.
-- Sensor acquisition and other display-control adapters remain pending; the app fails closed for automatic mode.
-- `scripts/build-windows-installer.ps1` creates a self-contained Windows x64 publish and compiles a per-user Inno Setup installer.
+- `src/SmartBrightness.Core` contains the platform-independent weighted fusion, smoothing, hysteresis, and bounded brightness policy.
+- `src/SmartBrightness.App` contains the WPF shell, local settings/history, Windows WMI internal-display adapter, sensor samplers, app opacity, and notification-area lifecycle.
+- Webcam frames are sampled with OpenCvSharp only while automatic mode is enabled. Camera handles and image buffers are disposed after each sample.
+- Screen content uses a 48 × 36 in-memory sample for each connected display, excluding the app window region; the sample buffer is discarded after computing a numeric value.
+- Numeric measurements and brightness history are stored under `%LOCALAPPDATA%\SmartBrightnessAI`; images, screenshots, and telemetry are not stored or uploaded.
+- Automatic mode starts only after the user turns it on and a WMI-compatible internal display is detected. Sampling runs once per minute and stops when auto mode is turned off or the process exits.
+- Closing or minimizing hides the main window and leaves the app in the notification area. The tray menu can reopen it or exit.
+- `tests/SmartBrightness.Core.Tests` contains deterministic sensor-fusion tests.
+- `scripts/build-windows-installer.ps1` publishes the app self-contained for x64 and compiles the per-user Inno Setup installer.
 
-The GitHub repository was confirmed empty before initialization. This is an initial foundation, not a completed hardware-integrated release.
+Sensor weights, camera exposure mapping, screen-content bias, and time-of-day values are provisional. The webcam is not a lux meter and the screen sample is not measured physical panel luminance.
 
 ## Setup
 
-Requires the .NET 8 SDK and Windows. Run `dotnet build SmartBrightness.sln` and `dotnet test SmartBrightness.sln` from the repository root. WPF execution and hardware integration require Windows.
+Requires Windows and the .NET 8 SDK to build. Run `dotnet build SmartBrightness.sln` and `dotnet test SmartBrightness.sln`. For an installer, install Inno Setup 7 and run `scripts/build-windows-installer.ps1`.
 
 ## Verified state
 
-- Workspace inspected on 16-Nov-2026.
-- Repository source and initial architecture added on 16-Nov-2026.
-- A .NET 8 SDK was installed locally under the ignored `.dotnet` folder for verification.
-- `dotnet build src/SmartBrightness.App/SmartBrightness.App.csproj` succeeded with zero warnings and errors.
-- `dotnet test SmartBrightness.sln` passed all 5 core tests.
-- The WMI provider and local data behavior compile, but actual display hardware operation has not been exercised.
-- The setup executable installed and uninstalled successfully in a temporary Windows test directory.
-- WPF interactive execution, physical display behavior, webcam access, and external monitor behavior remain unverified.
+- Full solution build succeeded with zero warnings and errors after the current changes.
+- All 7 core tests passed.
+- This Windows machine returned numeric webcam and screen samples from a one-shot local probe.
+- A close-message check confirmed the app window hides while its process remains running; it was then stopped for cleanup.
+- The self-contained installer successfully installed to a temporary directory, launched the app window, uninstalled successfully, and removed that directory.
+- The WMI provider detected a supported internal display, but changing physical brightness from the new automatic loop has not been hardware-verified.
+- Visual opacity quality, Windows sleep/resume, multi-monitor protected content, and installation on another machine remain unverified.
+- Installer is unsigned; SmartScreen and code-signing behavior remain unverified.

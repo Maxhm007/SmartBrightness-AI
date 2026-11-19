@@ -1,5 +1,6 @@
 param(
-    [string] $InnoCompiler
+    [string] $InnoCompiler,
+    [string] $Version = '0.4.0'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -25,6 +26,7 @@ if (-not $InnoCompiler) {
 if (-not $InnoCompiler) {
     $candidates = @(
         (Join-Path $env:LOCALAPPDATA 'Programs\Inno Setup 7\ISCC.exe'),
+        (Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 6\ISCC.exe'),
         (Join-Path ${env:ProgramFiles(x86)} 'Inno Setup 7\ISCC.exe'),
         (Join-Path $env:ProgramFiles 'Inno Setup 7\ISCC.exe')
     )
@@ -35,13 +37,13 @@ if (-not $InnoCompiler) { throw 'Inno Setup 7 compiler (ISCC.exe) not found. Ins
 New-Item -ItemType Directory -Force -Path $publishDir | Out-Null
 & $dotnet publish $project -c Release -r win-x64 --self-contained true `
     -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true `
-    -p:EnableCompressionInSingleFile=true -p:DebugType=None -p:DebugSymbols=false `
+    -p:EnableCompressionInSingleFile=true -p:DebugType=None -p:DebugSymbols=false -p:Version=$Version `
     -o $publishDir
 if ($LASTEXITCODE -ne 0) { throw "dotnet publish failed with exit code $LASTEXITCODE" }
 
-& $InnoCompiler $installerScript
+& $InnoCompiler "/DAppVersion=$Version" $installerScript
 if ($LASTEXITCODE -ne 0) { throw "Inno Setup compiler failed with exit code $LASTEXITCODE" }
 
-$output = Join-Path $repoRoot 'artifacts\windows\installer\SmartBrightnessAI-Setup-0.3.0.exe'
+$output = Join-Path $repoRoot "artifacts\windows\installer\SmartBrightnessAI-Setup-$Version.exe"
 if (-not (Test-Path -LiteralPath $output)) { throw "Installer output was not created: $output" }
 Get-Item -LiteralPath $output | Select-Object FullName, Length, LastWriteTime

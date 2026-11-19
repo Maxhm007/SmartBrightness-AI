@@ -1,4 +1,6 @@
-#define AppVersion "0.3.0"
+#ifndef AppVersion
+  #define AppVersion "0.4.0"
+#endif
 
 [Setup]
 AppId={{64DA6A7A-5659-423E-9927-219DE1B66258}
@@ -18,6 +20,8 @@ WizardStyle=modern
 Compression=lzma2
 SolidCompression=yes
 SetupLogging=yes
+CloseApplications=yes
+RestartApplications=yes
 
 [Tasks]
 Name: "desktopicon"; Description: "Create a desktop shortcut"; GroupDescription: "Additional shortcuts:"; Flags: unchecked

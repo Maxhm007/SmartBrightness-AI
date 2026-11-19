@@ -1,0 +1,39 @@
+name: Release Windows installer
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Install Inno Setup
+        shell: pwsh
+        run: choco install innosetup --yes --no-progress
+
+      - name: Build self-contained Windows installer
+        shell: pwsh
+        run: |
+          $version = $env:GITHUB_REF_NAME.TrimStart('v')
+          $iscc = Get-ChildItem "${env:ProgramFiles(x86)}\Inno Setup*\ISCC.exe" -ErrorAction Stop | Select-Object -First 1 -ExpandProperty FullName
+          .\scripts\build-windows-installer.ps1 -Version $version -InnoCompiler $iscc
+
+      - name: Publish GitHub release and installer
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $version = $env:GITHUB_REF_NAME.TrimStart('v')
+          $installer = "artifacts/windows/installer/SmartBrightnessAI-Setup-$version.exe"
+          gh release create $env:GITHUB_REF_NAME $installer --repo $env:GITHUB_REPOSITORY --title "SmartBrightness AI $env:GITHUB_REF_NAME" --notes "Windows x64 installer. Installed copies check GitHub Releases every six hours and apply verified updates silently in the background."

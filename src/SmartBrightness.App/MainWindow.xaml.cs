@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Management;
 using System.Runtime.InteropServices;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
@@ -18,6 +19,8 @@ public partial class MainWindow : Window
     private readonly LocalSettingsStore _settingsStore = new();
     private readonly WebcamSampler _webcamSampler = new();
     private readonly ScreenContentSampler _screenSampler = new();
+    private readonly CancellationTokenSource _updateCancellation = new();
+    private readonly BackgroundUpdateService _updateService;
     private Forms.NotifyIcon? _trayIcon;
     private Forms.ToolStripMenuItem? _trayAutoItem;
     private CancellationTokenSource? _automaticCancellation;
@@ -28,10 +31,16 @@ public partial class MainWindow : Window
     private bool _isLoaded;
     private bool _allowClose;
 
-    public MainWindow() => InitializeComponent();
+    public MainWindow()
+    {
+        InitializeComponent();
+        _updateService = new BackgroundUpdateService(StartUpdateInstaller);
+    }
 
     private async void MainWindow_Loaded(object sender, RoutedEventArgs e)
     {
+        _ = _updateService.RunAsync(_updateCancellation.Token);
+        _ = RegisterApplicationRestart(null, 0);
         try
         {
             var settings = await _settingsStore.LoadSettingsAsync();
@@ -323,6 +332,7 @@ public partial class MainWindow : Window
             HideToTray(showNotification: true);
             return;
         }
+        _updateCancellation.Cancel();
         _trayIcon?.ContextMenuStrip?.Dispose();
         _trayIcon?.Dispose();
         _trayIcon = null;
@@ -334,6 +344,27 @@ public partial class MainWindow : Window
         _allowClose = true;
         Close();
     }
+
+    private void StartUpdateInstaller(string installerPath)
+    {
+        _allowClose = true;
+        try
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = installerPath,
+                Arguments = "/VERYSILENT /SUPPRESSMSGBOXES /NORESTART /SP- /CLOSEAPPLICATIONS /RESTARTAPPLICATIONS",
+                UseShellExecute = true
+            });
+        }
+        catch (Exception ex) when (ex is InvalidOperationException or System.ComponentModel.Win32Exception or IOException)
+        {
+            _allowClose = false;
+        }
+    }
+
+    [DllImport("kernel32.dll", CharSet = CharSet.Unicode)]
+    private static extern int RegisterApplicationRestart(string? commandLine, uint flags);
 
     [StructLayout(LayoutKind.Sequential)]
     private struct NativeRect { public int Left, Top, Right, Bottom; }

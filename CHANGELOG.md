@@ -1,5 +1,12 @@
 # Changelog
 
+v0.4.0 - 19-Nov-2026 - 09:04 AM - Background Windows updates
+
+- Added startup and six-hour update checks against the public GitHub Releases feed while the app is running.
+- Downloads only a newer versioned installer over HTTPS and verifies its SHA-256 digest against GitHub release metadata before silent per-user installation.
+- Enabled graceful app close/restart during updates and added a GitHub Actions workflow to build and publish installers for `vX.Y.Z` tags.
+- Built the 0.4.0 self-contained installer locally; future update installation has not yet been verified on a second machine.
+
 v0.3.0 - 19-Nov-2026 - 12:37 AM - Transparent tray app and automatic sensors
 
 - Added adjustable window transparency and close/minimize to the notification area with reopen, pause, and exit actions.

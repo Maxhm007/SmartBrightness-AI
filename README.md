@@ -4,7 +4,7 @@ A local-first Windows brightness utility. This version includes manual brightnes
 
 ## Install
 
-Run `SmartBrightnessAI-Setup-0.4.0.exe` for the one-time upgrade that enables automatic updates. It installs per-user under `%LOCALAPPDATA%\Programs\SmartBrightnessAI`, creates a Start menu shortcut, and offers an optional desktop shortcut. It is self-contained, so a separate .NET runtime install is not needed. Uninstall preserves settings and numeric history in `%LOCALAPPDATA%\SmartBrightnessAI`.
+Download and run [SmartBrightnessAI-Setup-0.4.0.exe](https://github.com/Maxhm007/SmartBrightness-AI/releases/download/v0.4.0/SmartBrightnessAI-Setup-0.4.0.exe) for the one-time upgrade that enables automatic updates. It installs per-user under `%LOCALAPPDATA%\Programs\SmartBrightnessAI`, creates a Start menu shortcut, and offers an optional desktop shortcut. It is self-contained, so a separate .NET runtime install is not needed. Uninstall preserves settings and numeric history in `%LOCALAPPDATA%\SmartBrightnessAI`.
 
 Versions installed from 0.4.0 onward check the latest public GitHub release at startup and every six hours while the app is running, including when it is in the notification area. A newer installer downloads in the background, its SHA-256 digest is checked against GitHub's release asset metadata, and it installs silently per-user. The app may close briefly and restart to finish the update. If SmartBrightness AI is fully exited, it checks again the next time it is opened. The existing 0.3.0 installation must be upgraded manually once to 0.4.0.
 
